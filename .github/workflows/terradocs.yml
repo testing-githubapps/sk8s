@@ -1,7 +1,8 @@
 name: "Generate terraform docs"
 on:
-    push:
-
+    pull_request:
+permissions:
+    deployments: write
 jobs:
   update-docs:
     name: Update Terraform module documentation
@@ -9,9 +10,12 @@ jobs:
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v3
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
       - name: Render terraform docs inside the README.md and push changes back to PR branch
         uses: terraform-docs/gh-actions@v1.0.0
         with:
-            find-dir: ./infra/modules
+            find-dir: ./infra
             output-method: replace
             git-push: true
